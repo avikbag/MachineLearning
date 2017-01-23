@@ -2,6 +2,7 @@
 
 import numpy as np
 from numpy import linalg as la
+import pygal as py
 
 def main():
     q1 = np.matrix('''-2. 1.; 
@@ -37,6 +38,19 @@ def main():
     eigVal, eigVec = la.eig(covMat)
     print "Eigenvalues: \n{}\n".format(eigVal)
     print "Eigenvector: \n{}\n".format(eigVec)
+    
+    ## Using the max value of eigen value, use the corresponding 
+    ## eigenvector for data projection
+    res = np.dot(q1, eigVec[0])
+
+    print "Result after PCA: \n{}\n".format(res)
+    
+    res2 = [(x, 0) for x in res]
+    # print res2
+    ## Plotting to XY chart
+    chart = py.XY()
+    chart.add("After PCA", res2)
+    chart.render_to_file('./output.svg')
 
 if __name__ == "__main__":
     main()
