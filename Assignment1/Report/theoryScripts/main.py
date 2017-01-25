@@ -10,7 +10,7 @@ def standardize(q1):
     ave = q1.mean(0) ## This is used to find the mean over columns
     std = q1.std(0, ddof=1) ## This is used to find the var over columns
 
-    # print "Shape:\t\t\t{} \nMean:\t\t\t{} \nStandard Deviation:\t{}".format(D, ave, std)
+    print "Shape:\t\t\t{} \nMean:\t\t\t{} \nStandard Deviation:\t{}".format(D, ave, std)
 
     ## Standardizing data
     for i in range(0, D[1]):
@@ -18,7 +18,7 @@ def standardize(q1):
         q1[:,i] = q1[:,i] / std[0,i]
     
     q1 = np.around(q1, decimals=4)
-    # print "\nAfter Standardization: \n{}\n".format(q1)
+    print "\nAfter Standardization: \n{}\n".format(q1)
     
     return q1
 
@@ -79,14 +79,17 @@ def question1():
     
     ## Using the max value of eigen value, use the corresponding 
     ## eigenvector for data projection
-    res = np.dot(q1, eigVec[0])
+    pmat = np.matrix('0.7071; -0.7071')
+    print "Eigenvector chosen: \n{}\n".format(pmat)
+    res = np.dot(q1, eigVec[:,1])
 
     print "Result after PCA: \n{}\n".format(res)
     
     res2 = [(x, 0) for x in res]
+    print res2
     # print res2
     ## Plotting to XY chart
-    chart = py.XY()
+    chart = py.XY(range=(-0.5,0.5), stroke=False)
     chart.add("After PCA", res2)
     chart.render_to_file('./output.svg')
 
@@ -211,12 +214,29 @@ def lda():
     ## Eigen values and eigen vectors
     eigVal, eigVec = la.eig(scMatInv*sb)
     print "Eigenvalues: \n{}\n".format(eigVal)
-    print "Eigenvector: \n{}\n".format(eigVec[1])
+    print "Eigenvector: \n{}\n".format(eigVec)
     
-    W = np.matrix(eigVec[1])
-    W = W.transpose()
-    print W
+    res = np.dot(c0, eigVec[:,1])
+
+    print "Result after projection c0: \n{}\n".format(res)
     
+    res2 = [(x, 0) for x in res]
+    print res2
+    # print res2
+    ## Plotting to XY chart
+    chart = py.XY(stroke=False)
+    chart.add("c0", res2)
+    
+    res = np.dot(c1, eigVec[:,1])
+
+    print "Result after projection c1: \n{}\n".format(res)
+    
+    res2 = [(x, 0) for x in res]
+    print res2
+    # print res2
+    ## Plotting to XY chart
+    chart.add("c1", res2)
+    chart.render_to_file('./output.svg')
 
 def main():
     # question1()
