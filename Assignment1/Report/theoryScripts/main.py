@@ -214,7 +214,7 @@ def lda():
     ## Eigen values and eigen vectors
     eigVal, eigVec = la.eig(scMatInv*sb)
     print "Eigenvalues: \n{}\n".format(eigVal)
-    print "Eigenvector: \n{}\n".format(eigVec)
+    print "Eigenvector: \n{}\n".format(eigVec[:,1])
     
     res = np.dot(c0, eigVec[:,1])
 
@@ -224,8 +224,8 @@ def lda():
     print res2
     # print res2
     ## Plotting to XY chart
-    chart = py.XY(stroke=False)
-    chart.add("c0", res2)
+    chart = py.XY(xrange=(-1.8, 1.8), range=(-0.5, 0.5), stroke=False)
+    chart.add("Class 1", res2)
     
     res = np.dot(c1, eigVec[:,1])
 
@@ -235,7 +235,7 @@ def lda():
     print res2
     # print res2
     ## Plotting to XY chart
-    chart.add("c1", res2)
+    chart.add("Class 2", res2)
     chart.render_to_file('./output.svg')
 
 def main():
