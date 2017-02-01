@@ -1,5 +1,7 @@
+Be sure to add -XY argument while using ssh to get into tux.
+Matplotlib requires that there is X-window support.
+ 
 To run the script, simply use the following command, 
-  
   ./main.py
 
 This script uses the KMEAN.py script, that contains all the computational information for the k-mean calculations. Dataset of diabetes.csv is provided. 
