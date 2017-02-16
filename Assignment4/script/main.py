@@ -19,9 +19,10 @@ def main():
     ## Running iterative processs limited to 1 million 
     ## iterations or change in training RMSE < eps
     training, testing, RMSE = q1.iterate()
-    x = [x+1 for x in range(0, len(training))]
     
     ## Plotting 
+    x = [x+1 for x in range(0, len(training))]
+    
     plt.plot(x, training, 'r-', label='Training Data')
     plt.plot(x, testing, 'b-', label='Testing Data')
     plt.title('Gradient Descent')
