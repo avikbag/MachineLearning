@@ -159,7 +159,7 @@ class GradientDescent:
         training_RMSE_past = 0
         for i in range(0, limit):
             ## RMSE training
-            training_y_hat = self.prediction(self.training[:, 1:]) ## Need to exclude the bias
+            training_y_hat = self.prediction(self.training[:, 1:]) ## Need to exclude column of 1's
             training_RMSE = self.RMSE(self.training_y, training_y_hat)
 
             ## RMSE testing
