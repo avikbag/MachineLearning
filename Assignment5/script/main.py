@@ -3,37 +3,25 @@
 import numpy as np
 from numpy import linalg as la
 import matplotlib.pyplot as plt
-from GradientDescent import GradientDescent as gd
+from KNearestNeighbors import KNearestNeighbors as knn
 
 def main():
-    src = './x06Simple.csv'
-    learning_rate = 0.01
-    q1 = gd(src, learning_rate)
+    src = './spambase.data'
+    q1 = knn(src)
     
     ## Setting up training and testing data sets
     q1.shuffle()
-    q1.training()
-    q1.testing()
-    q1.init_theta()
+    xtraining, ytraining = q1.training()
+    xtesting, ytesting = q1.testing()
+
+    q1.knn_prediction()
+    q1.compute_errorTypes()
+    print "Precision: {}".format(q1.precision())
+    print "Recall   : {}".format(q1.recall())
+    print "F-Measure: {}".format(q1.fMeasure())
+    print "Accuracy : {}".format(q1.accuracy())
+
     
-    ## Running iterative processs limited to 1 million 
-    ## iterations or change in training RMSE < eps
-    training, testing, RMSE = q1.iterate()
-    
-    ## Plotting 
-    x = [x+1 for x in range(0, len(training))]
-    
-    plt.plot(x, training, 'r-', label='Training Data')
-    plt.plot(x, testing, 'b-', label='Testing Data')
-    plt.title('Gradient Descent')
-    plt.ylabel('RMSE of Training Data')
-    plt.xlabel('Iterations')
-    plt.legend(loc='upper right')
-    plt.savefig('output.png')
-    
-    ## Results
-    print "Number of iteratons: {}".format(len(training))
-    print "Training RMSE: {} \nTesting RMSE: {}".format(RMSE[0], RMSE[1])
 
 if __name__ == "__main__":
     main()

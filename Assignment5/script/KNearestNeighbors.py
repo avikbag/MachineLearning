@@ -95,6 +95,7 @@ class KNearestNeighbors:
 
         rows = ceil(D[0] * ratio)
         self.training_y = self.data[:rows, -1]
+
         self.training, self.ave_training, self.std_training = self.standardize(self.data[:rows, :-1])
         return self.training, self.training_y
     
@@ -129,25 +130,32 @@ class KNearestNeighbors:
         
         ## Populate list of distances to training nodes
         for i in range(0, rows):
-            training = self.training[i,:].tolist()
+            training = self.training[i,:]
             dist.append(self.dist_l1(current, training))
+        
+        # print "The distance of current node from the training set nodes"
+        # print dist
 
         for i in range(0, self.k):
-            index, _ = max(enumerate(dist), key=operator.itemgetter(1))
+            index, out = min(enumerate(dist), key=operator.itemgetter(1))
             value = self.training_y[index,0] ## pull out training data classifier
-
+            
+            # print "test classification: {}".format(value)
             if(value == 1):
-                one++
-            elif (values == 0):
-                zero++
-
+                one += 1
+            elif (value == 0):
+                zero += 1
+            
+            # print zero, one
             ## This checks whether a particular classifier is in majority
             if (one > (self.k/2)):
                 return 1
             elif (zero > (self.k/2)):
                 return 0
-            else:
-                pass
+
+            ## replace min with sentinel value, so that the same min
+            ## value is not repeated 
+            dist[index] = 999999
         
         ## Default case, if by any chance the majority checks fails
         return -1
@@ -158,47 +166,52 @@ class KNearestNeighbors:
 
         for i in range(0, rows):
             ## Need to convert to list so that dist calc can handle it. Expects list.
-            current = self.testing[i,:].tolist()[0]
-            predicted_vals.append(nearestNeighbors(current))
+            current = self.testing[i,:]
+            # print "Current Value: {}\n".format(current)
+            predicted_vals.append(self.nearestNeighbors(current))
+            # break
 
         self.predicted_y = predicted_vals
+        # print predicted_vals
 
     ## This method is used to calculate the basic error types
     ## based on the predicted values on the training data vs
     ## the actal testing data
     def compute_errorTypes(self):
         rows = self.testing.shape[0]
-
+        
         for i in range(0, rows):
             testing = self.testing_y[i, 0]
             predicted = self.predicted_y[i]
 
             if (testing == 1) and (predicted == 1):
-                self.tp++
+                self.tp += 1
             elif (testing == 0) and (predicted == 1):
-                self.fp++
+                self.fp += 1
             elif (testing == 1) and (predicted == 0):
-                self.fn++
+                self.fn += 1
             elif (testing == 0) and (predicted == 0):
-                self.tn++
+                self.tn += 1
             else:
-                pass
+                raise ValueError("Negative values stored. Dist calc failed")
+
+        # print self.tp, self.tn, self.fp, self.fn
 
     def precision(self):
-        return (self.tp)/(self.tp + self.fp)
+        return float(self.tp)/float(self.tp + self.fp)
 
     def recall(self):
-        return (self.tp)/(self.tp + self.fn)
+        return float(self.tp)/float(self.tp + self.fn)
 
     def fMeasure(self):
-        precision = (self.tp)/(self.tp + self.fp)
-        recall = (self.tp)/(self.tp + self.fn)
+        precision = float(self.tp)/float(self.tp + self.fp)
+        recall = float(self.tp)/float(self.tp + self.fn)
 
-        fm = (2 * precision * recall) / (precision + recall)
+        fm = float(2 * precision * recall) / float(precision + recall)
 
         return fm
 
     def accuracy(self):
-        return (self.tp + self.tn) / (self.tp + self.tn + self.fp + self.fn)
+        return float(self.tp + self.tn) / float(self.tp + self.tn + self.fp + self.fn)
 
 
