@@ -20,9 +20,8 @@ class MultiSupportVectorMachine:
     ## This is the base constructor that is called. It can accept 
     ## a file path to the data source and also checks if path is 
     ## valid. 
-    def __init__(self, csv=None, k=5):
+    def __init__(self, csv=None):
         self.csv = csv
-        self.k = k
 
         ## Initializing error types
         self.success = 0
@@ -64,7 +63,7 @@ class MultiSupportVectorMachine:
     
     # Shuffles the rows of the dataset
     def shuffle(self):
-        np.random.seed(0) ## Init seed to 0
+        # np.random.seed(0) ## Init seed to 0
         np.random.shuffle(self.data[2:, :])
     
     ## This method is used to standardize the dataset that is provided. 
@@ -96,13 +95,13 @@ class MultiSupportVectorMachine:
         D = self.dimension()
 
         rows = ceil((D[0]-2) * ratio) + 2
-        self.training_y = self.data[2:rows, -3]
+        self.training_y = self.data[2:rows, -1]
 
-        temp, self.ave_training, self.std_training = self.standardize(self.data[2:rows, :-3])
+        temp, self.ave_training, self.std_training = self.standardize(self.data[2:rows, :-2])
         f = temp.shape
         self.training = np.matrix(np.ones((f[0], f[1]+1)))
         self.training[:, :-1] = temp
-        self.training[:, -1] = self.training_y[:, 0]
+        self.training[:, -1] = self.training_y
         
         return self.training, self.training_y
     
@@ -110,8 +109,8 @@ class MultiSupportVectorMachine:
     def testing(self, ratio=(2./3.)):
         D = self.dimension()
         rows = ceil((D[0]-2) * ratio) + 2
-        self.testing_y = self.data[rows:, -3]
-        self.testing, _, _ = self.standardize(self.data[rows:, :-3], self.ave_training, self.std_training)
+        self.testing_y = self.data[rows:, -1]
+        self.testing, _, _ = self.standardize(self.data[rows:, :-2], self.ave_training, self.std_training)
         
         return self.testing, self.testing_y
 
@@ -123,24 +122,6 @@ class MultiSupportVectorMachine:
         for i in range(0, D):
             total += (abs(a[i] - b[i]))
         return total
-    
-
-    def precision(self):
-        return float(self.tp)/float(self.tp + self.fp)
-
-    def recall(self):
-        return float(self.tp)/float(self.tp + self.fn)
-
-    def fMeasure(self):
-        precision = float(self.tp)/float(self.tp + self.fp)
-        recall = float(self.tp)/float(self.tp + self.fn)
-
-        fm = float(2 * precision * recall) / float(precision + recall)
-
-        return fm
-
-    def accuracy(self):
-        return float(self.tp + self.tn) / float(self.tp + self.tn + self.fp + self.fn)
     
     def find_majority(self, values):
         ctr = {}
@@ -154,12 +135,14 @@ class MultiSupportVectorMachine:
             if ctr[i] > maximum[1]: 
                 maximum = (i,ctr[i])
 
-        return maximum
+        return maximum[0]
     
     def classifiers(self):
         data = self.training_y.flatten().tolist()[0]
         sets = list(itertools.combinations(np.unique(data), 2))
         self.sets = sets
+
+        # print self.sets
 
     ## Support vector generation is done by using the training data. The built
     ## in SVM class is available in python's scikit-learn. We will be using
@@ -215,7 +198,7 @@ class MultiSupportVectorMachine:
             predicted = self.predicted_y[i]
             # print predicted
 
-            if ((testing == 1) and (predicted[0] == 1)) or ((testing == 0) and (predicted[0] == 0)) :
+            if predicted == testing:
                 self.success += 1
             else:
                 self.fail += 1

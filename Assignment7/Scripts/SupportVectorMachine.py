@@ -66,7 +66,7 @@ class SupportVectorMachine:
     # Shuffles the rows of the dataset
     def shuffle(self):
         np.random.seed(0) ## Init seed to 0
-        np.random.shuffle(self.data)
+        np.random.shuffle(self.data[2:, :])
     
     ## This method is used to standardize the dataset that is provided. 
     def standardize(self, a, ave=None, std=None):
@@ -99,7 +99,7 @@ class SupportVectorMachine:
         rows = ceil(D[0] * ratio)
         self.training_y = self.data[:rows, -1]
 
-        self.training, self.ave_training, self.std_training = self.standardize(self.data[:rows, :-1])
+        self.training, self.ave_training, self.std_training = self.standardize(self.data[:rows, :-2])
         return self.training, self.training_y
     
     ## Pulls out testing data
@@ -108,7 +108,7 @@ class SupportVectorMachine:
         rows = ceil(D[0] * ratio)
         
         self.testing_y = self.data[rows:, -1]
-        self.testing, _, _ = self.standardize(self.data[rows:, :-1], self.ave_training, self.std_training)
+        self.testing, _, _ = self.standardize(self.data[rows:, :-2], self.ave_training, self.std_training)
         
         return self.testing, self.testing_y
 
