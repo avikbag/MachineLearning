@@ -205,4 +205,3 @@ class MultiSupportVectorMachine:
 
         # print self.success, self.fail
         return self.success, self.fail
-        # print self.tp, self.tn, self.fp, self.fn
