@@ -1,0 +1,10 @@
+Statistics for using in-built SVM library
+(scikit-learn) for binary classification
+__________________________________________
+Precision: 0.9187
+Recall   : 0.9012
+F-Measure: 0.9099
+Accuracy : 0.9328
+
+Multi Class support for in-built Binary SVM
+Accuracy: 0.9110

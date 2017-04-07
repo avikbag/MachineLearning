@@ -1,0 +1,7 @@
+Theta from Cross Fold Linear Regression : 
+[[ 3275.674]
+ [ 1097.618]
+ [ -259.336]]
+
+RMSE from Closed Form Linear Regression : 601.944595435
+RMSE from S-Fold Cross Validation : 714.100943808
